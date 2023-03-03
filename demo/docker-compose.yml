@@ -1,11 +1,40 @@
 ---
-version: '3'
-
+version: "3"
 services:
+  db:
+    image: reg.gabtec.pt/xgeeks/ventilar-db:latest
+    container_name: ventilar-db
+    ports:
+      - 5434:5432
+  api:
+    image: reg.gabtec.pt/xgeeks/ventilar-api:latest
+    container_name: ventilar-api
+    environment:
+      - NODE_ENV=production
+      - DB_NAME=ventilar_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_HOST=db
+      - ACCESS_TOKEN_SECRET=sdjkashfjkhadskjfhdsjakhfkj
+      - ACCESS_TOKEN_DURATION=1m
+      - REFRESH_TOKEN_SECRET=sdjkashfjkhadskjfhdsjakhfkj
+      - REFRESH_TOKEN_DURATION=1d
+    ports: #host : container
+      - 3002:3002
   app:
     image: reg.gabtec.pt/xgeeks/ventilar-app:latest
-    container_name: ventilar-app-react
-    ports:
-      - 8088:80
+    container_name: ventilar-app
     environment:
-      - API_URL=http://sapo.gabtec.pt
+      API_URL: "http://localhost:3002/api"
+      # - API_URL="api:3002/api"
+    ports: #host : container
+      - 8088:80
+  # watchertower:
+  #   image: containrrr/watchtower
+  #   container_name: ventilar-watcher
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /home/ubuntu/.docker/config.json:/config.json
+  #   command: --interval 15  x-api
+  #   restart: unless-stopped
+
