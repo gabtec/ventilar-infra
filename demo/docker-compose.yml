@@ -1,0 +1,11 @@
+---
+version: '3'
+
+services:
+  app:
+    image: reg.gabtec.pt/xgeeks/ventilar-app:latest
+    container_name: ventilar-app-react
+    ports:
+      - 8088:80
+    environment:
+      - API_URL=http://sapo.gabtec.pt
